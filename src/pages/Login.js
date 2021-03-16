@@ -3,6 +3,13 @@ import React, { Fragment } from "react";
 
 class Login extends React.Component {
 
+  //state
+  state={
+    isLike:false,
+    count:0
+  }
+
+  //ref
   emailRef = React.createRef()
   passwordRef = React.createRef()
 
@@ -15,13 +22,26 @@ class Login extends React.Component {
       password:this.passwordRef.current.value
     }
     console.log(formData)
-   
+    
 
     //3.處理登入邏輯
 
     //4.跳轉首頁
     this.props.history.push('/')
   }
+
+  handleClick =	()	=>	{
+    this.setState({
+        isLike:	!this.state.isLike
+    });
+    this.setState({
+        count:	this.state.count + 1
+    });
+    this.setState(prevState =>	{
+        return	{	count:	prevState.count + 2	};
+    });
+    console.log(this.state.count)
+};
 
 
   render() {
@@ -49,6 +69,12 @@ class Login extends React.Component {
               <button className='button is-fullwidth is-primary'  >Login</button>
             </div>
           </form>
+          <div className='control'>
+            <button className="button	is-fullwidth is-link" onClick={this.handleClick}>
+              {this.state.isLike?'NO':'😃'}
+            </button>
+
+          </div>
         </div>
       </Fragment>
     ); //JSX babel
