@@ -4,25 +4,22 @@ import React, { Fragment } from "react";
 class Login extends React.Component {
 
   //state
-  state={
-    isLike:false,
-    count:0
+  state = {
+    email:'',
+    password:''
   }
 
-  //ref
-  emailRef = React.createRef()
-  passwordRef = React.createRef()
-
+ 
   handleSubmit = event => {
     //1.阻止默認事件行為
     event.preventDefault();
     //2.獲取表單數據
-    const formData={
-      email:this.emailRef.current.value,
-      password:this.passwordRef.current.value
+    const formData = {
+      email: this.state.email,
+      password: this.state.password
     }
     console.log(formData)
-    
+
 
     //3.處理登入邏輯
 
@@ -30,18 +27,12 @@ class Login extends React.Component {
     this.props.history.push('/')
   }
 
-  handleClick =	()	=>	{
-    this.setState({
-        isLike:	!this.state.isLike
-    });
-    this.setState({
-        count:	this.state.count + 1
-    });
-    this.setState(prevState =>	{
-        return	{	count:	prevState.count + 2	};
-    });
-    console.log(this.state.count)
-};
+  
+  handleChange = e => {
+   this.setState({
+     [e.target.name]:	e.target.value.toUpperCase()
+   })
+  };
 
 
   render() {
@@ -56,25 +47,22 @@ class Login extends React.Component {
             <div className="field">
               <label className="label">Email</label>
               <div className="control">
-                <input className="input" type="email" placeholder="Email" ref={this.emailRef} />
+                <input className="input" type="email" placeholder="Email" value={this.state.email} 	name="email"
+                  onChange={this.handleChange} />
               </div>
             </div>
             <div className="field">
               <label className="label">Password</label>
               <div className="control">
-                <input className="input" type="Password" placeholder="Password" ref={this.passwordRef}/>
+                <input className="input" type="Password" placeholder="Password" value={this.state.password} 	name="password"
+                  onChange={this.handleChange} />
               </div>
             </div>
             <div className="control">
               <button className='button is-fullwidth is-primary'  >Login</button>
             </div>
           </form>
-          <div className='control'>
-            <button className="button	is-fullwidth is-link" onClick={this.handleClick}>
-              {this.state.isLike?'NO':'😃'}
-            </button>
-
-          </div>
+         
         </div>
       </Fragment>
     ); //JSX babel
