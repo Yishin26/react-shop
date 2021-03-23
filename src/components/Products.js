@@ -3,6 +3,8 @@ import React from 'react';
 import axios from 'commons/axios';
 import ToolBox from 'components/ToolBox';
 import Product from 'components/Product';
+import Panel from 'components/Panel'
+import AddInventory from 'components/AddInventory'
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 class Products extends React.Component {
@@ -44,6 +46,15 @@ class Products extends React.Component {
             products: _products
         });
     };
+    // add
+    toAdd = () => {
+        Panel.open({
+            component: AddInventory,
+            callback: data => {
+                console.log('callback data: ', data);
+                }
+        });
+    };
 
     render() {
         return (
@@ -64,6 +75,10 @@ class Products extends React.Component {
                             ))}
                         </TransitionGroup>
                     </div>
+                    {/* add */}
+                    <button className="button is-primary add-btn" onClick={this.toAdd}>
+                        add
+                    </button>
                 </div>
             </div>
         )
