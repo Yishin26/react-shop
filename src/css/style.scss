@@ -124,14 +124,17 @@ body {
   z-index: 99;
   .head {
     padding: 0.5rem;
-    text-align: right;
+    text-align: left;
     .close {
+      position: absolute;
+      right: 10px;
+     
       font-size: 24px;
       font-weight: 600;
       color: #333;
       cursor: pointer;
       line-height: 1;
-      margin-right: 4px;
+      
     }
   }
 }
@@ -383,6 +386,7 @@ body {
 // ---------- Inventory Component --------
 .inventory {
   padding: 1rem 2rem;
+  
 }
 
 // ----------- User Profile Components -------
@@ -426,4 +430,8 @@ body {
   .login-box {
     width: 100%;
   }
+}
+
+.textarea:not([rows]){
+  min-height: 2em
 }

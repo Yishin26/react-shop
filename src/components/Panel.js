@@ -33,10 +33,10 @@ class Panel extends React.Component {
         };
         return (
             <div className={_class[this.state.active]}>
-                <div className="over-layer" onClick={this.close}></div>
+                <div className="over-layer" onClick={()=>{this.close()}}></div>
                 <div className="panel">
                     <div className="head">
-                        <span className="close" onClick={this.close}>
+                        <span className="close" onClick={()=>{this.close()}}>
                             ×
                         </span>
                         {this.state.component}
