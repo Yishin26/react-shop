@@ -67,7 +67,28 @@ class Products extends React.Component {
             products: _products,
             sourceProducts: _sProducts
         });
-    }
+    };
+    update = product => {
+        const _products = [...this.state.products];
+        const _index = _products.findIndex(p => p.id === product.id);
+        //拿到id替換商品
+        _products.splice(_index, 1, product);
+        const _sProducts = [...this.state.sourceProducts];
+        const _sIndex = _sProducts.findIndex(p => p.id === product.id);
+        _sProducts.splice(_sIndex, 1, product);
+        this.setState({
+            products: _products,
+            sourceProducts: _sProducts
+        });
+    };
+    delete = id => {
+        const _products = this.state.products.filter(p => p.id !== id);
+        const _sProducts = this.state.sourceProducts.filter(p => p.id !== id);
+        this.setState({
+            products: _products,
+            sourceProducts: _sProducts
+        });
+    };
     render() {
         return (
             <div>
@@ -82,7 +103,7 @@ class Products extends React.Component {
                                     key={p.id}
                                 >
                                     <div className="column is-3" key={p.id}>
-                                        <Product product={p} />
+                                        <Product product={p} update={this.update} delete={this.delete} />
                                     </div></CSSTransition>
                             ))}
                         </TransitionGroup>

@@ -5,15 +5,21 @@ class Panel extends React.Component {
     state = {
         active: false,
         component: null,
-        callback: () => {}
+        callback: () => { }
     };
-    open = options => {
-        const { component, callback } = options;
+    open = (options = {
+        props: {}, 
+        component: null,
+        callback: () => { }
+    }) => {
+        const { props, component, callback } = options;
+        const _key = new Date().getTime();
         const _component = React.createElement(component, {
+            ...props,
             close: this.close,
             //讓組建重新渲染
-            key: new Date().getTime()
-            });
+            key: _key
+        });
         this.setState({
             active: true,
             component: _component,
@@ -33,10 +39,10 @@ class Panel extends React.Component {
         };
         return (
             <div className={_class[this.state.active]}>
-                <div className="over-layer" onClick={()=>{this.close()}}></div>
+                <div className="over-layer" onClick={() => { this.close() }}></div>
                 <div className="panel">
                     <div className="head">
-                        <span className="close" onClick={()=>{this.close()}}>
+                        <span className="close" onClick={() => { this.close() }}>
                             ×
                         </span>
                         {this.state.component}
