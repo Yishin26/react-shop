@@ -1,7 +1,9 @@
 import React from 'react';
 import Panel from 'components/Panel';
 import { formatPrice } from '../commons/help';
+import axios from 'commons/axios';
 import EditInventory from 'components/EditInventory';
+import { toast } from 'react-toastify';
 
 
 class Product extends React.Component {
@@ -15,6 +17,38 @@ class Product extends React.Component {
                 }
             }
         });
+    };
+    addCart = async () => {
+        try {
+            const { id, name, image, price } = this.props.product;
+            const res = await axios.get('/carts', {
+                params: {
+                    productId: id
+                }
+            });
+            const carts = res.data;
+            if (carts && carts.length > 0) {
+                const cart = carts[0];
+                cart.mount += 1;
+                await axios.put(`/carts/${cart.id}`, cart);
+            } else {
+                const cart = {
+                    productId: id,
+                    name,
+                    image,
+                    price,
+                    mount: 1
+                };
+                await axios.post('/carts', cart);
+            }
+            toast.success('Add Cart Success');
+            this.props.updateCartNum();
+        }
+        catch (error) {
+            toast.error('Add Cart Failed')
+           
+        }
+
     };
 
     render() {
@@ -43,7 +77,7 @@ class Product extends React.Component {
 
                 <div className="p-footer">
                     <p className="price">{formatPrice(price)}</p>
-                    <button className="add-cart" disabled={status === 'unavailable'}>
+                    <button className="add-cart" disabled={status === 'unavailable'} onClick={this.addCart}>
                         <i className="fas fa-shopping-cart"></i>
                         <i className="fas fa-exclamation "></i>
                     </button>

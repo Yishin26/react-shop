@@ -11,9 +11,11 @@ class Products extends React.Component {
 
     state = {
         products: [],
-        sourceProducts: []
+        sourceProducts: [],
+        cartNum: 0
     }
     componentDidMount() {
+        this.updateCartNum();
         fetch('http://localhost:3003/products')
         // .then(response => response.json())
         // .then(data => {
@@ -29,6 +31,24 @@ class Products extends React.Component {
             });
         })
     }
+
+    updateCartNum = async () => {
+        const num = await this.initCartNum();
+        this.setState({
+            cartNum: num
+        });
+    };
+    initCartNum = async () => {
+        const res = await axios.get(`/carts`);
+        const carts = res.data || [];
+        const cartNum = carts
+            .map(c => c.mount)
+            .reduce((accumulator, value) => accumulator + value, 0);
+        return cartNum || 0;
+    };
+
+
+
     //search
     search = text => {
         // 1. Get New Array
@@ -92,7 +112,7 @@ class Products extends React.Component {
     render() {
         return (
             <div>
-                <ToolBox search={this.search} />
+                <ToolBox search={this.search} cartNum={this.state.cartNum} />
                 <div className="products">
                     <div className="columns is-multiline is-desktop">
                         <TransitionGroup component={null}>
@@ -103,7 +123,7 @@ class Products extends React.Component {
                                     key={p.id}
                                 >
                                     <div className="column is-3" key={p.id}>
-                                        <Product product={p} update={this.update} delete={this.delete} />
+                                        <Product product={p} update={this.update} delete={this.delete} updateCartNum={this.updateCartNum}/>
                                     </div></CSSTransition>
                             ))}
                         </TransitionGroup>
