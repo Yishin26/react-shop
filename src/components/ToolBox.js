@@ -1,4 +1,9 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+
+//默认情况下必须经过路路由匹配渲染的组件才存在this.props,才拥有路路由参数
+//使⽤用withRouter就可以给此未经过路路由匹配渲染的组件传⼊入路路由参数
+
 class ToolBox extends React.Component {
     state = {
         searchText: ''
@@ -15,6 +20,9 @@ class ToolBox extends React.Component {
             searchText: ''
         });
         this.props.search('');
+    };
+    goCart = () => {
+        this.props.history.push('/cart');
     };
     render() {
         return (
@@ -36,7 +44,7 @@ class ToolBox extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="cart-box">
+                <div className="cart-box" onClick={this.goCart}>
                     <i className="fas fa-shopping-cart"></i>
                     <span className="cart-num">({this.props.cartNum})</span>
                 </div>
@@ -44,4 +52,4 @@ class ToolBox extends React.Component {
         )
     }
 }
-export default ToolBox;
+export default withRouter(ToolBox);
