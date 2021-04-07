@@ -1,19 +1,56 @@
-import React from 'react';
-import Layout from '../components/Layout';
+import React, { useState, useEffect, useMemo } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import axios from 'commons/axios';
+import Layout from 'components/Layout';
 import CartItem from 'components/CartItem';
+import { formatPrice } from 'commons/help';
+// Hook
 const Cart = props => {
+    const [carts, setCarts] = useState([]);
+    useEffect(() => {
+        axios.get('/carts').then(res => {
+            setCarts(res.data);
+        });
+    }, []);
+    const totalPrice = useMemo(() => {
+        const totalCent = carts
+            .map(cart => cart.mount * parseInt(cart.price))
+            .reduce((a, value) => a + value, 0);
+        return formatPrice(totalCent);
+    }, [carts]);
+    const updateCart = cart => {
+        const newCarts = [...carts];
+        const _index = newCarts.findIndex(c => c.id === cart.id);
+        newCarts.splice(_index, 1, cart);
+        setCarts(newCarts);
+    };
+    const deleteCart = cart => {
+        const _carts = carts.filter(c => c.id !== cart.id);
+        setCarts(_carts);
+    };
     return (
         <Layout>
             <div className="cart-page">
-                <p className="title has-text-centered">Cart Page</p>
+                <span className="cart-title">Shopping Cart</span>
                 <div className="cart-list">
-                    <CartItem />
-                    <CartItem />
-                    <CartItem />
+                    <TransitionGroup component={null}>
+                        {carts.map(cart => (
+                            <CSSTransition classNames="cart-item" timeout={500} key=
+                                {cart.id}>
+                                <CartItem
+                                    key={cart.id}
+                                    cart={cart}
+                                    updateCart={updateCart}
+                                    deleteCart={deleteCart}
+                                />
+                            </CSSTransition>
+                        ))}
+                    </TransitionGroup>
                 </div>
+                {carts.length === 0 ? <p className="no-cart">NO GOODS</p> : ''}
                 <div className="cart-total">
                     Total:
-                <span className="total-price">￥2345</span>
+<span className="total-price">{totalPrice}</span>
                 </div>
             </div>
         </Layout>
