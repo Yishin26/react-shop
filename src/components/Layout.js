@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import Header from 'components/Header';
 const Layout = props => {
     const user = useMemo(() => {
-        const user = '';
-        //global.auth.getUser() || {}
+        const user = global.auth.getUser() || {};
+        
         return user;
     }, []);
     return (

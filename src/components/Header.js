@@ -1,6 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-const Header = props => (
+const Header = props => {
+console.log(props)
+    
+    
+    
+    return(
+   
     <div className="header">
         <div className="grid">
             <div className="start">
@@ -21,5 +27,5 @@ const Header = props => (
             </div>
         </div>
     </div>
-);
+)};
 export default Header;
