@@ -16,7 +16,8 @@ class Products extends React.Component {
     }
     componentDidMount() {
         this.updateCartNum();
-        fetch('http://localhost:3003/products')
+        let baseURL= process.env.REACT_APP_API_DOMAIN || 'http://localhost:3003';
+        fetch(`${baseURL}/products`)
         // .then(response => response.json())
         // .then(data => {
         //     console.log(data)
