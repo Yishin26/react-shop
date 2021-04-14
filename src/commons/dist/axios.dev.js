@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var axios = function axios(baseURL) {
   var instance = _axios2["default"].create({
-    baseURL: baseURL || 'http://localhost:3003',
+    baseURL: baseURL || process.env.REACT_APP_API_DOMAIN || 'http://localhost:3003',
     timeout: 1000
   }); // 配置拦截器器
 
