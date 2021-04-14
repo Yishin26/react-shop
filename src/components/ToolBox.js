@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { toast } from 'react-toastify'
 
 //默认情况下必须经过路路由匹配渲染的组件才存在this.props,才拥有路路由参数
 //使⽤用withRouter就可以给此未经过路路由匹配渲染的组件传⼊入路路由参数
@@ -22,6 +23,11 @@ class ToolBox extends React.Component {
         this.props.search('');
     };
     goCart = () => {
+        if (!global.auth.isLogin()) {
+            this.props.history.push('/login');
+            toast.info('Please Login First');
+            return;
+        }
         this.props.history.push('/cart');
     };
     render() {

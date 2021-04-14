@@ -1,9 +1,11 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import Panel from 'components/Panel';
 import { formatPrice } from '../commons/help';
 import axios from 'commons/axios';
 import EditInventory from 'components/EditInventory';
 import { toast } from 'react-toastify';
+
 
 
 class Product extends React.Component {
@@ -19,38 +21,60 @@ class Product extends React.Component {
         });
     };
     addCart = async () => {
-        try {
-            const { id, name, image, price } = this.props.product;
-            const res = await axios.get('/carts', {
-                params: {
-                    productId: id
+        if (!global.auth.isLogin()) {
+            this.props.history.push('/login');
+            toast.info('Please Login First');
+            return;
+        }
+        else{
+            try {
+                const user = global.auth.getUser() || {};
+                const { id, name, image, price } = this.props.product;
+                const res = await axios.get('/carts', {
+                    params: {
+                        productId: id
+                    }
+                });
+                const carts = res.data;
+                if (carts && carts.length > 0) {
+                    const cart = carts[0];
+                    cart.mount += 1;
+                    await axios.put(`/carts/${cart.id}`, cart);
+                } else {
+                    const cart = {
+                        productId: id,
+                        name,
+                        image,
+                        price,
+                        mount: 1,
+                        userId: user.email
+                    };
+                    await axios.post('/carts', cart);
                 }
-            });
-            const carts = res.data;
-            if (carts && carts.length > 0) {
-                const cart = carts[0];
-                cart.mount += 1;
-                await axios.put(`/carts/${cart.id}`, cart);
-            } else {
-                const cart = {
-                    productId: id,
-                    name,
-                    image,
-                    price,
-                    mount: 1
-                };
-                await axios.post('/carts', cart);
+                toast.success('Add Cart Success');
+                this.props.updateCartNum();
             }
-            toast.success('Add Cart Success');
-            this.props.updateCartNum();
+            catch (error) {
+                toast.error('Add Cart Failed')
+    
+            }
         }
-        catch (error) {
-            toast.error('Add Cart Failed')
-           
-        }
+        
 
     };
+    renderManagerBtn = () => {
 
+        const user = global.auth.getUser() || {};
+        if (user.type === 1) {
+            return (
+                <div className="p-head has-text-right" onClick={this.toEdit}>
+                    <span className="icon edit-btn">
+                        <i className="fas fa-sliders-h"></i>
+                    </span>
+                </div>
+            );
+        }
+    };
     render() {
         const { name, image, tags, price, status } = this.props.product;
         const _pClass = {
@@ -60,11 +84,7 @@ class Product extends React.Component {
         return (
             <div className={_pClass[status]}>
                 <div className="p-content">
-                    <div className="p-head has-text-right" onClick={this.toEdit}>
-                        <span className="icon edit-btn">
-                            <i className="fas fa-sliders-h"></i>
-                        </span>
-                    </div>
+                {this.renderManagerBtn()}
                     <div className="img-wrapper">
                         <div className="out-stock-text">Out Of Stock</div>
                         <figure className="image is4by3">
@@ -86,4 +106,4 @@ class Product extends React.Component {
         );
     }
 }
-export default Product;
+export default  withRouter(Product);

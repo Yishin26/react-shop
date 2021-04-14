@@ -39,7 +39,12 @@ class Products extends React.Component {
         });
     };
     initCartNum = async () => {
-        const res = await axios.get(`/carts`);
+        const user = global.auth.getUser() || {};
+        const res = await axios.get(`/carts`, {
+            params: {
+                userId: user.email
+            }
+        });
         const carts = res.data || [];
         const cartNum = carts
             .map(c => c.mount)
@@ -123,15 +128,16 @@ class Products extends React.Component {
                                     key={p.id}
                                 >
                                     <div className="column is-3" key={p.id}>
-                                        <Product product={p} update={this.update} delete={this.delete} updateCartNum={this.updateCartNum}/>
+                                        <Product product={p} update={this.update} delete={this.delete} updateCartNum={this.updateCartNum} />
                                     </div></CSSTransition>
                             ))}
                         </TransitionGroup>
                     </div>
                     {/* add */}
-                    <button className="button is-primary add-btn" onClick={this.toAdd}>
-                        add
-                    </button>
+                    {(global.auth.getUser() || {}).type === 1 && (
+                        <button className="button is-primary add-btn" onClick={this.toAdd}>
+                            add
+                        </button>)}
                 </div>
             </div>
         )
